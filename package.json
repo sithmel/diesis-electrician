@@ -1,0 +1,41 @@
+{
+  "name": "diesis-electrician",
+  "version": "0.0.1",
+  "description": "Adapter to use electrician components in diesis",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha tests/*.js",
+    "watch": "npm run test -- -w",
+    "lint": "eslint --fix --ext .js ./src ./tests",
+    "release:major": "npm-release major",
+    "release:minor": "npm-release minor",
+    "release:patch": "npm-release patch",
+    "precommit": "npm run lint",
+    "prepush": "npm run test"
+  },
+  "keywords": [
+    "plugins",
+    "dependency injection",
+    "services"
+  ],
+  "repository": "git@github.com:sithmel/diesis-electrician.git",
+  "author": "Maurizio Lupo <maurizio.lupo@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "eslint": "^4.18.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.10.2",
+    "mocha": "^2.1.0",
+    "npm-release": "^1.0.0"
+  },
+  "dependencies": {
+    "diesis": "^0.1.0",
+    "diogenes": "^6.0.0",
+    "diogenes-electrician": "^6.0.0"
+  }
+}
