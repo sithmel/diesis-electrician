@@ -2,15 +2,16 @@ const diogenesElectrician = require('diogenes-electrician')
 const Diogenes = require('diogenes')
 const dependency = require('diesis').dependency
 
-function getDep(keys, registry) {
+function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getDep(keys, registry, prefix) {
+  prefix = prefix || ''
   return keys
     .map(key => {
-      return [key, dependency(() => registry.run(key))]
+      return [`${prefix}${prefix ? capitalize(key) : key}`, dependency(() => registry.run(key))]
     })
-    .reduce((obj, [k, v]) => {
-      obj[k] = v
-      return obj
-    }, {})
 }
 
 function getDependencies(components) {
@@ -19,9 +20,11 @@ function getDependencies(components) {
   // components is an object name->electrician component
   diogenesElectrician.addElectricComponents(registry, stopRegistry, components)
   const keys = Object.keys(components)
-  const start = getDep(keys, registry)
-  const stop = getDep(keys, stopRegistry)
-  return { start, stop }
+  return getDep(keys, registry).concat(getDep(keys, stopRegistry, 'stop'))
+    .reduce((obj, [k, v]) => {
+      obj[k] = v
+      return obj
+    }, {})
 }
 
 

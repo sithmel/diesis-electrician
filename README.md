@@ -2,27 +2,36 @@ diesis-electrician
 ==================
 This is an adapter for using [electrician](https://github.com/tes/electrician) components in with Diesis.
 
-getDependencies
----------------
-It adds a set of electric components to 2 Diogenes registry. The first one can be used to start the services in order, the second one to stop them in the opposite order.
+How it works
+------------
+You import the adapter like this:
 ```js
-var diogenesElectrician = require('diogenes-electrician');
-var Diogenes = require('diogenes');
+const diesisElectrician = require('diesis-electrician')
+```
+Then you pass a map of electric components:
+```js
+const deps = diesisElectrician(components)
+```
+You get back an object with a function for each electric component. And a function for stopping that component too.
+```js
+const deps = diesisElectrician({
+  config: new Conflab(),
+  endpoints: new Endpoints(),
+  metrics: new ElectricMetrics(),
+  refdata: new Refdata(),
+  server: new Server(),
+})
 
-var registry = Diogenes.getRegistry();
-var stopRegistry = Diogenes.getRegistry();
-// components is an object name->electrician component
-diogenesElectrician.addElectricComponents(registry, stopRegistry, components);
+deps.config() // start this service and all the deps
+deps.refdata() // start this service and all the deps
+
+deps.stopConfig() // stop this service and all the deps
+deps.stopRefdata() // stop this service and all the deps
 ```
-Then you can start a component using the diogenes "registry" API:
+So you can use these reference as dependencies
 ```js
-registry.run('componentName', function (err, res) {
+const dependency = require('diesis').dependency
+const doSomething = dependency([deps.config, deps.refdata], (config, refdata) => {
   // ...
-});
-```
-and stop with:
-```js
-stopRegistry.run('componentName', function (err, res) {
-  // ...
-});
+})
 ```

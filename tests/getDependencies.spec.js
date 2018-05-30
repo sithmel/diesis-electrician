@@ -3,7 +3,7 @@ var getDependencies = require('../src')
 var assert = require('chai').assert
 var getComponents = require('./get-components')
 
-describe('addElectricComponents', function () {
+describe('getDependencies', function () {
   var deps
 
   beforeEach(function () {
@@ -12,53 +12,53 @@ describe('addElectricComponents', function () {
   })
 
   it('must start a', function () {
-    return deps.start.a()
+    return deps.a()
       .then(function (res) {
         assert.equal(res, 'a')
       })
   })
 
   it('must start b', function () {
-    return deps.start.b()
+    return deps.b()
       .then(function (res) {
         assert.equal(res, 'b')
       })
   })
 
   it('must start c', function () {
-    return deps.start.c()
+    return deps.c()
       .then(function (res) {
         assert.equal(res, 'c')
       })
   })
 
   it('must start d', function () {
-    return deps.start.d()
+    return deps.d()
       .then(function (res) {
         assert.equal(res, 'd')
       })
   })
 
   it('must stop a', function () {
-    return deps.stop.a()
+    return deps.stopA()
   })
 
   it('must stop b', function () {
-    return deps.stop.b()
+    return deps.stopB()
       .then(function (res) {
         assert.equal(res, 'b')
       })
   })
 
   it('must stop c', function () {
-    return deps.stop.c()
+    return deps.stopC()
       .then(function (res) {
         assert.equal(res, 'c')
       })
   })
 
   it('must stop d', function () {
-    return deps.stop.d()
+    return deps.stopD()
       .then(function (res) {
         assert.equal(res, 'd')
       })
