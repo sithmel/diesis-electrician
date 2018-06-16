@@ -34,8 +34,8 @@
     "npm-release": "^1.0.0"
   },
   "dependencies": {
-    "diesis": "^0.1.0",
-    "diogenes": "^6.0.0",
-    "diogenes-electrician": "^6.0.0"
+    "diesis": "^0.2.0",
+    "lodash": "^4.17.10",
+    "toposort-class": "^1.0.1"
   }
 }

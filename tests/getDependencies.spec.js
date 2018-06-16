@@ -11,54 +11,69 @@ describe('getDependencies', function () {
     deps = getDependencies(components)
   })
 
+  it('start all', function () {
+    return deps.start()
+      .then(function (res) {
+        assert.deepEqual(res, [ 'a', 'b', 'c', 'd' ])
+      })
+  })
+
+  it('stop all', function () {
+    return deps.stop()
+      .then(function (res) {
+        assert(res)
+      })
+  })
+
+
   it('must start a', function () {
-    return deps.a()
+    return deps.startRegistry.a()
       .then(function (res) {
         assert.equal(res, 'a')
       })
   })
 
   it('must start b', function () {
-    return deps.b()
+    return deps.startRegistry.b()
       .then(function (res) {
         assert.equal(res, 'b')
       })
   })
 
   it('must start c', function () {
-    return deps.c()
+    return deps.startRegistry.c()
       .then(function (res) {
         assert.equal(res, 'c')
       })
   })
 
   it('must start d', function () {
-    return deps.d()
+    return deps.startRegistry.d()
       .then(function (res) {
         assert.equal(res, 'd')
       })
   })
 
   it('must stop a', function () {
-    return deps.stopA()
+    return deps.stopRegistry.a()
   })
 
   it('must stop b', function () {
-    return deps.stopB()
+    return deps.stopRegistry.b()
       .then(function (res) {
         assert.equal(res, 'b')
       })
   })
 
   it('must stop c', function () {
-    return deps.stopC()
+    return deps.stopRegistry.c()
       .then(function (res) {
         assert.equal(res, 'c')
       })
   })
 
   it('must stop d', function () {
-    return deps.stopD()
+    return deps.stopRegistry.d()
       .then(function (res) {
         assert.equal(res, 'd')
       })

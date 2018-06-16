@@ -1,6 +1,6 @@
 diesis-electrician
 ==================
-This is an adapter for using [electrician](https://github.com/tes/electrician) components in with Diesis.
+This is an adapter for using [electrician](https://github.com/tes/electrician) components with Diesis.
 
 How it works
 ------------
@@ -12,7 +12,7 @@ Then you pass a map of electric components:
 ```js
 const deps = diesisElectrician(components)
 ```
-You get back an object with a function for each electric component. And a function for stopping that component too.
+You get back an object with start/stop method compatible with electrician:
 ```js
 const deps = diesisElectrician({
   config: new Conflab(),
@@ -22,16 +22,21 @@ const deps = diesisElectrician({
   server: new Server(),
 })
 
-deps.config() // start this service and all the deps
-deps.refdata() // start this service and all the deps
+deps.start((err) => {
+  // ... starts all components
+})
 
-deps.stopConfig() // stop this service and all the deps
-deps.stopRefdata() // stop this service and all the deps
+deps.stop((err) => {
+  // ... stops all components
+})
 ```
-So you can use these reference as dependencies
+**deps** contains also 2 registries (startRegistry and stopRegistry) with all dependencies that you can export and use:
 ```js
-const dependency = require('diesis').dependency
-const doSomething = dependency([deps.config, deps.refdata], (config, refdata) => {
+const getConfig = deps.startRegistry.config
+const getRefdata = deps.startRegistry.refdata
+
+const { dependency } = require('diesis')
+const doSomething = dependency([getConfig, getRefdata], (config, refdata) => {
   // ...
 })
 ```
