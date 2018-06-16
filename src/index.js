@@ -1,7 +1,7 @@
 const { promisify } = require('util')
 const { dependency, memoize, runMulti } = require('diesis')
-const _ = require('lodash');
-const Toposort = require('toposort-class');
+const _ = require('lodash')
+const Toposort = require('toposort-class')
 
 function sequence(components) {
   const nameDeps = _(components)
