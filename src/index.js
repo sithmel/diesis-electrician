@@ -25,9 +25,24 @@ function decorateComp(f) {
   return memoize(f)
 }
 
+function zip(a1, a2) {
+  return a1.map((item, i) => [item, a2[i]])
+}
+
+function pairsToObj(pairs) {
+  return pairs
+    .reduce((obj, pair) => {
+      obj[pair[0]] = pair[1]
+      return obj
+    }, {})
+}
+
 function runAllMethod(registry) {
   return function (cb) {
-    const promise = runMulti(Object.keys(registry).map((key) => registry[key]))
+    const keys = Object.keys(registry)
+    const promise = runMulti(keys.map((key) => registry[key]))
+      .then((res) => pairsToObj(zip(keys, res)))
+
     if (!cb) return promise
 
     promise
@@ -39,6 +54,7 @@ function runAllMethod(registry) {
 function getDependencies(components) {
   const startRegistry = {}
   const stopRegistry = {}
+
   sequence(components)
     .forEach((name) => {
       const comp = components[name]
@@ -53,6 +69,5 @@ function getDependencies(components) {
 
   return { startRegistry, stopRegistry, start, stop }
 }
-
 
 module.exports = getDependencies

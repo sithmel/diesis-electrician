@@ -14,7 +14,7 @@ describe('getDependencies', function () {
   it('start all', function () {
     return deps.start()
       .then(function (res) {
-        assert.deepEqual(res, [ 'a', 'b', 'c', 'd' ])
+        assert.deepEqual(res, { a: 'a', b: 'b', c: 'c', d: 'd' })
       })
   })
 
