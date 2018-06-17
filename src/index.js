@@ -60,8 +60,10 @@ function getDependencies(components) {
       const comp = components[name]
       const dependencies = (comp.dependsOn || [])
         .map((name) => startRegistry[name])
-      startRegistry[name] = dependency(dependencies, decorateComp(comp.start))
-      stopRegistry[name] = dependency(decorateComp(comp.stop))
+      const startFunc = comp.start || function (cb) {cb()}
+      const stopFunc = comp.stop || function (cb) {cb()}
+      startRegistry[name] = dependency(dependencies, decorateComp(startFunc.bind(comp)))
+      stopRegistry[name] = dependency(decorateComp(stopFunc.bind(comp)))
     })
 
   const start = runAllMethod(startRegistry)
