@@ -38,16 +38,10 @@ function pairsToObj(pairs) {
 }
 
 function runAllMethod(registry) {
-  return function (cb) {
+  return function (obj) {
     const keys = Object.keys(registry)
-    const promise = runMulti(keys.map((key) => registry[key]))
+    return runMulti(keys.map((key) => registry[key]), obj)
       .then((res) => pairsToObj(zip(keys, res)))
-
-    if (!cb) return promise
-
-    promise
-      .then(res => cb(null, res))
-      .catch(err => cb(err))
   }
 }
 
@@ -59,17 +53,22 @@ function getDependencies(components) {
     .forEach((name) => {
       const comp = components[name]
       const dependencies = (comp.dependsOn || [])
-        .map((name) => startRegistry[name])
+        .map((name) => {
+          if (name in startRegistry) {
+            return startRegistry[name]
+          }
+          return name
+        })
       const startFunc = comp.start || function (cb) {cb()}
       const stopFunc = comp.stop || function (cb) {cb()}
       startRegistry[name] = dependency(dependencies, decorateComp(startFunc.bind(comp)))
       stopRegistry[name] = dependency(decorateComp(stopFunc.bind(comp)))
     })
 
-  const start = runAllMethod(startRegistry)
-  const stop = runAllMethod(stopRegistry)
+  const startAll = runAllMethod(startRegistry)
+  const stopAll = runAllMethod(stopRegistry)
 
-  return { startRegistry, stopRegistry, start, stop }
+  return { startRegistry, stopRegistry, startAll, stopAll }
 }
 
 module.exports = getDependencies

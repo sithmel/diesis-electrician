@@ -12,14 +12,14 @@ describe('getDependencies', function () {
   })
 
   it('start all', function () {
-    return deps.start()
+    return deps.startAll()
       .then(function (res) {
         assert.deepEqual(res, { a: 'a', b: 'b', c: 'c', d: 'd' })
       })
   })
 
   it('stop all', function () {
-    return deps.stop()
+    return deps.stopAll()
       .then(function (res) {
         assert(res)
       })

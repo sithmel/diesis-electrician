@@ -12,7 +12,7 @@ Then you pass a map of electric components:
 ```js
 const deps = diesisElectrician(components)
 ```
-You get back an object with start/stop method compatible with electrician:
+You get back an object with startAll/stopAll methods:
 ```js
 const deps = diesisElectrician({
   config: new Conflab(),
@@ -22,13 +22,22 @@ const deps = diesisElectrician({
   server: new Server(),
 })
 
-deps.start((err) => {
-  // ... starts all components
-})
+deps.startAll() // ... starts all components
+  .then(obj => {
+    // obj is a map with all components
+  })
 
-deps.stop((err) => {
-  // ... stops all components
-})
+deps.stopAll() // ... stops all components
+  .then(() => {
+  })
+```
+Every dependency not declared in the components is intended as additional argument that can be sent in the startAll/stopAll method:
+```js
+deps.startAll({ value: 5 })
+```
+startAll/stopAll are convenience methods build on top of runMulti:
+```js
+runMulti([config, endpoints, metrics, refdata, server], { value: 5 })
 ```
 **deps** contains also 2 registries (startRegistry and stopRegistry) with all dependencies that you can export and use:
 ```js
