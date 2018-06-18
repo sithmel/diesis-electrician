@@ -49,3 +49,15 @@ const doSomething = dependency([getConfig, getRefdata], (config, refdata) => {
   // ...
 })
 ```
+If you want get the same API of electrician you can call getSystem:
+```js
+const system = deps.getSystem(obj) // you inject some argument if required
+
+system.start((err) => {
+  // ...
+})
+
+system.stop((err) => {
+  // ...
+})
+```

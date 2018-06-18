@@ -20,6 +20,19 @@ function sequence(components) {
     .concat(noDeps));
 }
 
+function invertedDeps (name, components) {
+  return Object.keys(components)
+    .map(function (n) {
+      var dependsOn = components[n].dependsOn || []
+      if (dependsOn.indexOf(name) !== -1) {
+        return n
+      }
+    })
+    .filter(function (item) {
+      return !!item
+    })
+}
+
 function decorateComp(f) {
   f = f ? promisify(f) : () => Promise.resolve()
   return memoize(f)
@@ -52,6 +65,8 @@ function getDependencies(components) {
   sequence(components)
     .forEach((name) => {
       const comp = components[name]
+      if (typeof comp === 'undefined') return
+
       const dependencies = (comp.dependsOn || [])
         .map((name) => {
           if (name in startRegistry) {
@@ -60,15 +75,37 @@ function getDependencies(components) {
           return name
         })
       const startFunc = comp.start || function (cb) {cb()}
-      const stopFunc = comp.stop || function (cb) {cb()}
       startRegistry[name] = dependency(dependencies, decorateComp(startFunc.bind(comp)))
-      stopRegistry[name] = dependency(decorateComp(stopFunc.bind(comp)))
+    })
+
+  sequence(components).reverse()
+    .forEach((name) => {
+      const comp = components[name]
+      if (typeof comp === 'undefined') return
+      const dependencies = invertedDeps (name, components)
+        .map((name) => {
+          if (name in stopRegistry) {
+            return stopRegistry[name]
+          }
+          return name
+        })
+      const stopFunc = comp.stop || function (cb) {cb()}
+      stopRegistry[name] = dependency(dependencies, () => decorateComp(stopFunc.bind(comp))())
     })
 
   const startAll = runAllMethod(startRegistry)
   const stopAll = runAllMethod(stopRegistry)
 
-  return { startRegistry, stopRegistry, startAll, stopAll }
+  const getSystem = (obj) => ({
+    start: (cb) => startAll(obj)
+      .then(() => cb(null))
+      .catch((err) => cb(err)),
+    stop: stopAll(obj)
+      .then(() => cb(null))
+      .catch((err) => cb(err))
+  })
+
+  return { startRegistry, stopRegistry, startAll, stopAll, getSystem }
 }
 
 module.exports = getDependencies
