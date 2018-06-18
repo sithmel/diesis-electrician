@@ -3,6 +3,16 @@ var assert = require('chai').assert
 
 function getComponents () {
   return {
+    e: {
+      start: function (a, next) {
+        assert.equal(a, 'a')
+        next(null, 'e')
+      },
+      stop: function (next) {
+        next(null, 'e')
+      },
+      dependsOn: ['a', 'b', 'c']
+    },
     d: {
       start: function (a, b, c, next) {
         assert.equal(a, 'a')

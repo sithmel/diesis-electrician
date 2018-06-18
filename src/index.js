@@ -33,9 +33,13 @@ function invertedDeps (name, components) {
     })
 }
 
-function decorateComp(f) {
-  f = f ? promisify(f) : () => Promise.resolve()
-  return memoize(f)
+function decorateComp(f, arity) {
+  const func = function () {
+    const args = Array.prototype.slice.call(arguments, 0, arity - 1)
+    const cb = arguments[arguments.length - 1]
+    f(...args, cb)
+  }
+  return memoize(promisify(func))
 }
 
 function zip(a1, a2) {
@@ -75,7 +79,7 @@ function getDependencies(components) {
           return name
         })
       const startFunc = comp.start || function (cb) {cb()}
-      startRegistry[name] = dependency(dependencies, decorateComp(startFunc.bind(comp)))
+      startRegistry[name] = dependency(dependencies, decorateComp(startFunc.bind(comp), startFunc.length))
     })
 
   sequence(components).reverse()
@@ -90,7 +94,7 @@ function getDependencies(components) {
           return name
         })
       const stopFunc = comp.stop || function (cb) {cb()}
-      stopRegistry[name] = dependency(dependencies, () => decorateComp(stopFunc.bind(comp))())
+      stopRegistry[name] = dependency(dependencies, decorateComp(stopFunc.bind(comp), 1))
     })
 
   const startAll = runAllMethod(startRegistry)

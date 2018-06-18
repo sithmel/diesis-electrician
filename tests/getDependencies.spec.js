@@ -14,7 +14,7 @@ describe('getDependencies', function () {
   it('start all', function () {
     return deps.startAll()
       .then(function (res) {
-        assert.deepEqual(res, { a: 'a', b: 'b', c: 'c', d: 'd' })
+        assert.deepEqual(res, { a: 'a', b: 'b', c: 'c', d: 'd', e: 'e' })
       })
   })
 
@@ -51,6 +51,13 @@ describe('getDependencies', function () {
     return deps.startRegistry.d()
       .then(function (res) {
         assert.equal(res, 'd')
+      })
+  })
+
+  it('must start e', function () {
+    return deps.startRegistry.e()
+      .then(function (res) {
+        assert.equal(res, 'e')
       })
   })
 
