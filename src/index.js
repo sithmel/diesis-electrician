@@ -104,7 +104,8 @@ function getDependencies(components) {
     start: (cb) => startAll(obj)
       .then(() => cb(null))
       .catch((err) => cb(err)),
-    stop: stopAll(obj)
+
+    stop: (cb) => stopAll(obj)
       .then(() => cb(null))
       .catch((err) => cb(err))
   })
