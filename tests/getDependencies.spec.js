@@ -25,7 +25,6 @@ describe('getDependencies', function () {
       })
   })
 
-
   it('must start a', function () {
     return deps.startRegistry.a()
       .then(function (res) {
