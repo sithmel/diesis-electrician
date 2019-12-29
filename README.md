@@ -35,9 +35,9 @@ Every dependency not declared in the components is intended as additional argume
 ```js
 deps.startAll({ value: 5 })
 ```
-startAll/stopAll are convenience methods build on top of runMulti:
+startAll/stopAll are convenience methods build on top of `run`:
 ```js
-runMulti([config, endpoints, metrics, refdata, server], { value: 5 })
+run([config, endpoints, metrics, refdata, server], { value: 5 })
 ```
 **deps** contains also 2 registries (startRegistry and stopRegistry) with all dependencies that you can export and use:
 ```js

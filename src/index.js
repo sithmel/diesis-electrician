@@ -1,5 +1,5 @@
 const { promisify } = require('util')
-const { dependency, memoize, runMulti } = require('diesis')
+const { dependencyMemo, run } = require('diesis')
 const _ = require('lodash')
 const Toposort = require('toposort-class')
 
@@ -39,7 +39,7 @@ function decorateComp (f, arity) {
     const cb = arguments[arguments.length - 1]
     f(...args, cb)
   }
-  return memoize(promisify(func))
+  return promisify(func)
 }
 
 function zip (a1, a2) {
@@ -57,7 +57,7 @@ function pairsToObj (pairs) {
 function runAllMethod (registry) {
   return function (obj) {
     const keys = Object.keys(registry)
-    return runMulti(keys.map((key) => registry[key]), obj)
+    return run(keys.map((key) => registry[key]), obj)
       .then((res) => pairsToObj(zip(keys, res)))
   }
 }
@@ -79,7 +79,7 @@ function getDependencies (components) {
           return name
         })
       const startFunc = comp.start || function (cb) { cb() }
-      startRegistry[name] = dependency(dependencies, decorateComp(startFunc.bind(comp), startFunc.length))
+      startRegistry[name] = dependencyMemo(dependencies, decorateComp(startFunc.bind(comp), startFunc.length))
     })
 
   sequence(components).reverse()
@@ -94,7 +94,7 @@ function getDependencies (components) {
           return name
         })
       const stopFunc = comp.stop || function (cb) { cb() }
-      stopRegistry[name] = dependency(dependencies, decorateComp(stopFunc.bind(comp), 1))
+      stopRegistry[name] = dependencyMemo(dependencies, decorateComp(stopFunc.bind(comp), 1))
     })
 
   const startAll = runAllMethod(startRegistry)
